@@ -54,4 +54,8 @@ public class Portfolio {
 	public double getExpectedEAR() {
 		return mTotalExpectedEAR;
 	}
+	
+	public List<InstrumentFinancial> getAllAssets() {
+		return mAllAssets;
+	}
 }
