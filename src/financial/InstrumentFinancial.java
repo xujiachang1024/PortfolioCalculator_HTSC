@@ -8,7 +8,7 @@ public class InstrumentFinancial {
 	private Double mTotal;				// 产品实际投入总金额（实际仓位+管理费，单位：万元）
 	private Double mFee;				// 产品管理费（单位：万元）
 	private Double mPosition;			// 产品实际仓位（单位：万元）
-	private Double mExpectedRevenue; 	// 产品预期年化收益（本金+回报）
+	private Double mRevenue; 			// 产品预期年化收益（本金+回报）
 
 	public InstrumentFinancial(String inCode, String inName, double inEAR, double inTotal, double inFee) {
 		this.mCode = inCode;
@@ -17,7 +17,7 @@ public class InstrumentFinancial {
 		this.mTotal = inTotal;
 		this.mFee = inFee;
 		this.updatePosition();
-		this.updateExpectedRevenue();
+		this.updateRevenue();
 	}
 	
 	private void setCode(String inCode) {
@@ -44,8 +44,8 @@ public class InstrumentFinancial {
 		this.mPosition = mTotal - mFee;
 	}
 	
-	private void updateExpectedRevenue() {
-		this.mExpectedRevenue = mPosition * (1 + mEAR);
+	private void updateRevenue() {
+		this.mRevenue = mPosition * (1 + mEAR);
 	}
 	
 	public String getCode() {
@@ -72,7 +72,7 @@ public class InstrumentFinancial {
 		return mPosition;
 	}
 	
-	public double getExpectedRevenue() {
-		return mExpectedRevenue;
+	public double getRevenue() {
+		return mRevenue;
 	}
 }
