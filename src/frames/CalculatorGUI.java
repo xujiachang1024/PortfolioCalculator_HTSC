@@ -19,8 +19,11 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.table.DefaultTableModel;
 
+import financial.Commodity;
+import financial.Currency;
 import financial.FixedIncome;
 import financial.InstrumentFinancial;
+import financial.Other;
 import financial.Portfolio;
 import financial.PrivateFund;
 import financial.PublicFund;
@@ -55,6 +58,9 @@ public class CalculatorGUI extends JFrame{
 	private JButton mAddPrivateFundButton;
 	private JButton mAddPublicFundButton;
 	private JButton mAddFixedIncomeButton;
+	private JButton mAddCommodityButton;
+	private JButton mAddCurrencyButton;
+	private JButton mAddOtherButton;
 	private JTextField mRemoveTextField;
 	private JButton mRemoveButton;
 	private JButton mRemoveAllButton;
@@ -96,7 +102,7 @@ public class CalculatorGUI extends JFrame{
 		this.mRemoveButtons = new ArrayList<JButton>();
 		this.updateDisplay();
 		// southPanel
-		this.mAlertLabel = new JLabel("欢迎使用");
+		this.mAlertLabel = new JLabel("欢迎使用投资组合预期年化收益率计算器");
 		this.mCodeTextField = new JTextField();
 		this.mNameTextField = new JTextField();
 		this.mEARTextField = new JTextField();
@@ -104,6 +110,9 @@ public class CalculatorGUI extends JFrame{
 		this.mAddPrivateFundButton = new JButton("添加私募类产品");
 		this.mAddPublicFundButton = new JButton("添加公募类产品");
 		this.mAddFixedIncomeButton = new JButton("添加固收类产品");
+		this.mAddCommodityButton = new JButton("添加商品类产品");
+		this.mAddCurrencyButton = new JButton("添加货币类产品");
+		this.mAddOtherButton = new JButton("添加另类产品");
 		this.mRemoveTextField = new JTextField();
 		this.mRemoveButton = new JButton("移除此产品");
 		this.mRemoveAllButton = new JButton("一键清空");
@@ -184,8 +193,11 @@ public class CalculatorGUI extends JFrame{
 		JPanel southCenterPanel = new JPanel();
 		JPanel southSouthPanel = new JPanel();
 		GraphicSettings.setFont(GraphicConstants.fontMedium, mAlertLabel);
+		GraphicSettings.setFont(GraphicConstants.fontSmallest, mAddPrivateFundButton, mAddPublicFundButton, mAddFixedIncomeButton, mAddCommodityButton, mAddCurrencyButton, mAddOtherButton, mRemoveButton, mRemoveAllButton);
+		GraphicSettings.setForeground(GraphicConstants.greenText, mAddPrivateFundButton, mAddPublicFundButton, mAddFixedIncomeButton, mAddCommodityButton, mAddCurrencyButton, mAddOtherButton);
+		GraphicSettings.setForeground(GraphicConstants.redText, mRemoveButton, mRemoveAllButton);
 		GraphicSettings.setSize(240, 35, mCodeTextField, mNameTextField, mEARTextField, mTotalTextField, mRemoveTextField);
-		GraphicSettings.setSize(120, 35, mAddPrivateFundButton, mAddPublicFundButton, mAddFixedIncomeButton, mRemoveButton, mRemoveAllButton);
+		GraphicSettings.setSize(120, 35, mAddPrivateFundButton, mAddPublicFundButton, mAddFixedIncomeButton, mAddCommodityButton, mAddCurrencyButton, mAddOtherButton, mRemoveButton, mRemoveAllButton);
 		GraphicSettings.setTextAlignment(mAlertLabel);
 		southNorthPanel.add(mCodeTextField);
 		southNorthPanel.add(mNameTextField);
@@ -194,6 +206,9 @@ public class CalculatorGUI extends JFrame{
 		southCenterPanel.add(mAddPrivateFundButton);
 		southCenterPanel.add(mAddPublicFundButton);
 		southCenterPanel.add(mAddFixedIncomeButton);
+		southCenterPanel.add(mAddCommodityButton);
+		southCenterPanel.add(mAddCurrencyButton);
+		southCenterPanel.add(mAddOtherButton);
 		southSouthPanel.add(mRemoveTextField);
 		southSouthPanel.add(mRemoveButton);
 		southSouthPanel.add(mRemoveAllButton);
@@ -263,7 +278,12 @@ public class CalculatorGUI extends JFrame{
 					double inEAR = Double.parseDouble(mEARTextField.getText()) / 100.00;
 					try {
 						double inTotal = Double.parseDouble(mTotalTextField.getText());
-						if (inTotal < 100) {
+						if (inTotal > portfolio.getTotalCash()) {
+							GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+							mAlertLabel.setText(StringConstants.InsufficientCashAlert);
+							return;
+						}
+						else if (inTotal < 100) {
 							GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
 							mAlertLabel.setText(StringConstants.InvalidPrivateFundPositionAlert);
 						} else {
@@ -312,6 +332,11 @@ public class CalculatorGUI extends JFrame{
 					double inEAR = Double.parseDouble(mEARTextField.getText()) / 100.00;
 					try {
 						double inTotal = Double.parseDouble(mTotalTextField.getText());
+						if (inTotal > portfolio.getTotalCash()) {
+							GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+							mAlertLabel.setText(StringConstants.InsufficientCashAlert);
+							return;
+						}
 						InstrumentFinancial newAsset = new PublicFund(inCode, inName, inEAR, inTotal);
 						mAssetModel.addRow(new String[] {
 								Integer.toString(mAssetModel.getRowCount() + 1), 
@@ -356,6 +381,11 @@ public class CalculatorGUI extends JFrame{
 					double inEAR = Double.parseDouble(mEARTextField.getText()) / 100.00;
 					try {
 						double inTotal = Double.parseDouble(mTotalTextField.getText());
+						if (inTotal > portfolio.getTotalCash()) {
+							GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+							mAlertLabel.setText(StringConstants.InsufficientCashAlert);
+							return;
+						}
 						InstrumentFinancial newAsset = new FixedIncome(inCode, inName, inEAR, inTotal);
 						mAssetModel.addRow(new String[] {
 								Integer.toString(mAssetModel.getRowCount() + 1), 
@@ -368,6 +398,153 @@ public class CalculatorGUI extends JFrame{
 						updateDisplay();
 						GraphicSettings.setForeground(GraphicConstants.greenText, mAlertLabel);
 						mAlertLabel.setText(StringConstants.FixedIncomeAddedAlert);
+					} catch (Exception exc) {
+						GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+						mAlertLabel.setText(StringConstants.InvalidTotalReadingAlert);
+					}
+				} catch (Exception exc) {
+					GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+					mAlertLabel.setText(StringConstants.InvalidEARReadingAlert);
+				}
+			}
+			
+		});
+		
+		this.mAddCommodityButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String inCode = mCodeTextField.getText();
+				if (inCode.equals("请输入产品代码")) {
+					GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+					mAlertLabel.setText("请输入产品代码");
+					return;
+				}
+				String inName = mNameTextField.getText();
+				if (inName.equals("请输入产品名称")) {
+					GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+					mAlertLabel.setText("请输入产品名称");
+					return;
+				}
+				try {
+					double inEAR = Double.parseDouble(mEARTextField.getText()) / 100.00;
+					try {
+						double inTotal = Double.parseDouble(mTotalTextField.getText());
+						if (inTotal > portfolio.getTotalCash()) {
+							GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+							mAlertLabel.setText(StringConstants.InsufficientCashAlert);
+							return;
+						}
+						InstrumentFinancial newAsset = new Commodity(inCode, inName, inEAR, inTotal);
+						mAssetModel.addRow(new String[] {
+								Integer.toString(mAssetModel.getRowCount() + 1), 
+								newAsset.getCode(), newAsset.getName(), "大宗商品类", 
+								Double.toString(Math.round(newAsset.getEAR() * 10000.00) / 100.00) + StringConstants.BaiFenShu, 
+								Double.toString(Math.round(newAsset.getTotal() * 100.00) / 100.00) + StringConstants.WanYuan,
+								Double.toString(Math.round(newAsset.getEarning() * 100.00) / 100.00) + StringConstants.WanYuan
+						});
+						portfolio.add(newAsset);
+						updateDisplay();
+						GraphicSettings.setForeground(GraphicConstants.greenText, mAlertLabel);
+						mAlertLabel.setText(StringConstants.CommodityAddedAlert);
+					} catch (Exception exc) {
+						GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+						mAlertLabel.setText(StringConstants.InvalidTotalReadingAlert);
+					}
+				} catch (Exception exc) {
+					GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+					mAlertLabel.setText(StringConstants.InvalidEARReadingAlert);
+				}
+			}
+			
+		});
+		
+		this.mAddCurrencyButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String inCode = mCodeTextField.getText();
+				if (inCode.equals("请输入产品代码")) {
+					GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+					mAlertLabel.setText("请输入产品代码");
+					return;
+				}
+				String inName = mNameTextField.getText();
+				if (inName.equals("请输入产品名称")) {
+					GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+					mAlertLabel.setText("请输入产品名称");
+					return;
+				}
+				try {
+					double inEAR = Double.parseDouble(mEARTextField.getText()) / 100.00;
+					try {
+						double inTotal = Double.parseDouble(mTotalTextField.getText());
+						if (inTotal > portfolio.getTotalCash()) {
+							GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+							mAlertLabel.setText(StringConstants.InsufficientCashAlert);
+							return;
+						}
+						InstrumentFinancial newAsset = new Currency(inCode, inName, inEAR, inTotal);
+						mAssetModel.addRow(new String[] {
+								Integer.toString(mAssetModel.getRowCount() + 1), 
+								newAsset.getCode(), newAsset.getName(), "货币类", 
+								Double.toString(Math.round(newAsset.getEAR() * 10000.00) / 100.00) + StringConstants.BaiFenShu, 
+								Double.toString(Math.round(newAsset.getTotal() * 100.00) / 100.00) + StringConstants.WanYuan,
+								Double.toString(Math.round(newAsset.getEarning() * 100.00) / 100.00) + StringConstants.WanYuan
+						});
+						portfolio.add(newAsset);
+						updateDisplay();
+						GraphicSettings.setForeground(GraphicConstants.greenText, mAlertLabel);
+						mAlertLabel.setText(StringConstants.CurrencyAddedAlert);
+					} catch (Exception exc) {
+						GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+						mAlertLabel.setText(StringConstants.InvalidTotalReadingAlert);
+					}
+				} catch (Exception exc) {
+					GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+					mAlertLabel.setText(StringConstants.InvalidEARReadingAlert);
+				}
+			}
+			
+		});
+		
+		this.mAddOtherButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String inCode = mCodeTextField.getText();
+				if (inCode.equals("请输入产品代码")) {
+					GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+					mAlertLabel.setText("请输入产品代码");
+					return;
+				}
+				String inName = mNameTextField.getText();
+				if (inName.equals("请输入产品名称")) {
+					GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+					mAlertLabel.setText("请输入产品名称");
+					return;
+				}
+				try {
+					double inEAR = Double.parseDouble(mEARTextField.getText()) / 100.00;
+					try {
+						double inTotal = Double.parseDouble(mTotalTextField.getText());
+						if (inTotal > portfolio.getTotalCash()) {
+							GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+							mAlertLabel.setText(StringConstants.InsufficientCashAlert);
+							return;
+						}
+						InstrumentFinancial newAsset = new Other(inCode, inName, inEAR, inTotal);
+						mAssetModel.addRow(new String[] {
+								Integer.toString(mAssetModel.getRowCount() + 1), 
+								newAsset.getCode(), newAsset.getName(), "另类", 
+								Double.toString(Math.round(newAsset.getEAR() * 10000.00) / 100.00) + StringConstants.BaiFenShu, 
+								Double.toString(Math.round(newAsset.getTotal() * 100.00) / 100.00) + StringConstants.WanYuan,
+								Double.toString(Math.round(newAsset.getEarning() * 100.00) / 100.00) + StringConstants.WanYuan
+						});
+						portfolio.add(newAsset);
+						updateDisplay();
+						GraphicSettings.setForeground(GraphicConstants.greenText, mAlertLabel);
+						mAlertLabel.setText(StringConstants.OtherAddedAlert);
 					} catch (Exception exc) {
 						GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
 						mAlertLabel.setText(StringConstants.InvalidTotalReadingAlert);

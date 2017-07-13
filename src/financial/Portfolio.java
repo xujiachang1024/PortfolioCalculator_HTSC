@@ -11,6 +11,12 @@ public class Portfolio {
 	private Double mTotalCash;						// 空仓规模（单位：万元）
 	private Double mTotalEarning;					// 投资组合预期回报（单位：万元）
 	private Double mTotalEAR;						// 投资组合预期年化收益率（单位：%)
+	private Double mTotalPrivateFund;				// 私募基金类产品投入金额（单位：万元）
+	private Double mTotalPublicFund;				// 公募基金类产品投入金额（单位：万元）
+	private Double mTotalFixedIncome;				// 固定收益类产品投入金额（单位：万元）
+	private Double mTotalCommodity;					// 大宗商品类产品投入金额（单位：万元）
+	private Double mTotalCurrency;					// 货币类产品投入金额（单位：万元）
+	private Double mTotalOther;						// 另类产品投入金额（单位：万元）
 	private List<InstrumentFinancial> mAllAssets;	// 投资组合列表
 
 	public Portfolio(double inTotalFunds) {
@@ -18,6 +24,12 @@ public class Portfolio {
 		this.mTotalPosition = 0.00;
 		this.mTotalFees = 0.00;
 		this.mTotalEarning = 0.00;
+		this.mTotalPrivateFund = 0.00;
+		this.mTotalPublicFund = 0.00;
+		this.mTotalFixedIncome = 0.00;
+		this.mTotalCommodity = 0.00;
+		this.mTotalCurrency = 0.00;
+		this.mTotalOther = 0.00;
 		this.mAllAssets = new ArrayList<InstrumentFinancial>();
 		this.updateMemebrs();
 	}
@@ -53,6 +65,24 @@ public class Portfolio {
 		this.mTotalFees += newAsset.getFee();
 		this.mTotalEarning += newAsset.getEarning();
 		this.updateMemebrs();
+		if (newAsset instanceof PrivateFund) {
+			this.mTotalPrivateFund += newAsset.getTotal();
+		}
+		if (newAsset instanceof PublicFund) {
+			this.mTotalPublicFund += newAsset.getTotal();
+		}
+		if (newAsset instanceof FixedIncome) {
+			this.mTotalFixedIncome += newAsset.getTotal();
+		}
+		if (newAsset instanceof Commodity) {
+			this.mTotalCommodity += newAsset.getTotal();
+		}
+		if (newAsset instanceof Currency) {
+			this.mTotalCurrency += newAsset.getTotal();
+		}
+		if (newAsset instanceof Other) {
+			this.mTotalOther += newAsset.getTotal();
+		}
 	}
 	
 	public boolean remove(int index) {
@@ -61,6 +91,24 @@ public class Portfolio {
 		this.mTotalFees -= oldAsset.getFee();
 		this.mTotalEarning -= oldAsset.getEarning();
 		this.updateMemebrs();
+		if (oldAsset instanceof PrivateFund) {
+			this.mTotalPrivateFund -= oldAsset.getTotal();
+		}
+		if (oldAsset instanceof PublicFund) {
+			this.mTotalPublicFund -= oldAsset.getTotal();
+		}
+		if (oldAsset instanceof FixedIncome) {
+			this.mTotalFixedIncome -= oldAsset.getTotal();
+		}
+		if (oldAsset instanceof Commodity) {
+			this.mTotalCommodity -= oldAsset.getTotal();
+		}
+		if (oldAsset instanceof Currency) {
+			this.mTotalCurrency -= oldAsset.getTotal();
+		}
+		if (oldAsset instanceof Other) {
+			this.mTotalOther -= oldAsset.getTotal();
+		}
 		return true;
 	}
 	
@@ -70,6 +118,24 @@ public class Portfolio {
 			this.mTotalFees -= oldAsset.getFee();
 			this.mTotalEarning -= oldAsset.getEarning();
 			this.updateMemebrs();
+			if (oldAsset instanceof PrivateFund) {
+				this.mTotalPrivateFund -= oldAsset.getTotal();
+			}
+			if (oldAsset instanceof PublicFund) {
+				this.mTotalPublicFund -= oldAsset.getTotal();
+			}
+			if (oldAsset instanceof FixedIncome) {
+				this.mTotalFixedIncome -= oldAsset.getTotal();
+			}
+			if (oldAsset instanceof Commodity) {
+				this.mTotalCommodity -= oldAsset.getTotal();
+			}
+			if (oldAsset instanceof Currency) {
+				this.mTotalCurrency -= oldAsset.getTotal();
+			}
+			if (oldAsset instanceof Other) {
+				this.mTotalOther -= oldAsset.getTotal();
+			}
 			return true;
 		}
 		return false;
