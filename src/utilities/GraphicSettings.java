@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.Window;
 
+import javax.swing.AbstractButton;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -104,6 +105,9 @@ public class GraphicSettings {
 
 		for (T component : components) {
 			component.setOpaque(true);
+			if (component instanceof JButton) {
+				((JButton)component).setBorderPainted(false);
+			}
 		}
 	}
 

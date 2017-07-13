@@ -9,35 +9,17 @@ public class InstrumentFinancial {
 	private Double mFee;				// 产品管理费（单位：万元）
 	private Double mPosition;			// 产品实际仓位（单位：万元）
 	private Double mEarning;            // 产品预期回报
+	private Double mYear;				// 产品投资时长（单位：年）
 
-	public InstrumentFinancial(String inCode, String inName, double inEAR, double inTotal, double inFee) {
+	public InstrumentFinancial(String inCode, String inName, double inEAR, double inTotal, double inFee, double inYear) {
 		this.mCode = inCode;
 		this.mName = inName;
 		this.mEAR = inEAR;
 		this.mTotal = inTotal;
 		this.mFee = inFee;
+		this.mYear = inYear;
 		this.updatePosition();
 		this.updateEarning();
-	}
-	
-	private void setCode(String inCode) {
-		this.mCode = inCode;
-	}
-	
-	private void setName(String inName) {
-		this.mName = inName;
-	}
-	
-	private void setEAR(double inEAR) {
-		this.mEAR = inEAR;
-	}
-	
-	private void setTotal(double inTotal) {
-		this.mTotal = inTotal;
-	}
-	
-	private void setFee(double inFee) {
-		this.mFee = inFee;
 	}
 	
 	private void updatePosition() {
@@ -45,7 +27,7 @@ public class InstrumentFinancial {
 	}
 	
 	private void updateEarning() {
-		this.mEarning = mPosition * mEAR;
+		this.mEarning = mPosition * mEAR * mYear;
 	}
 	
 	public String getCode() {

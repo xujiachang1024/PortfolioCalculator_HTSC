@@ -22,6 +22,7 @@ public class GraphicConstants {
 	public static final Color lightGrey = new Color(160, 160, 160);
 	public static final Color mediumLightGrey = new Color(221, 221, 221);
 	public static final Color veryLightGrey = new Color(224, 224, 224);
+	public static final Color navyBlue = new Color(0, 0, 128);
 
 	public static final Color secondaryText = new Color(40, 40, 40);
 	public static final Color greenText = new Color(0, 100, 0);

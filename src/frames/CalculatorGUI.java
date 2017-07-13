@@ -9,6 +9,7 @@ import java.util.List;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -37,6 +38,7 @@ public class CalculatorGUI extends JFrame{
 	private Portfolio portfolio;
 	// northPanel
 	private JTextField mTotalFundsTextField;
+	private JTextField mCashLowerLimitTextField;
 	private JButton mTotalFundsButton;
 	// centerPanel
 	private JLabel mTotalFundsLabel;
@@ -45,6 +47,12 @@ public class CalculatorGUI extends JFrame{
 	private JLabel mTotalCashLabel;
 	private JLabel mTotalEARLabel;
 	private JLabel mTotalEarningLabel;
+	private JLabel mPrivateFundWeightLabel;
+	private JLabel mPublicFundWeightLabel;
+	private JLabel mFixedIncomeWeightLabel;
+	private JLabel mCommodityWeightLabel;
+	private JLabel mCurrencyWeightLabel;
+	private JLabel mOtherWeightLabel;
 	private DefaultTableModel mAssetModel;
 	private JTable mAssetTable;
 	private JScrollPane mScrollPane;
@@ -55,6 +63,7 @@ public class CalculatorGUI extends JFrame{
 	private JTextField mNameTextField;
 	private JTextField mEARTextField;
 	private JTextField mTotalTextField;
+	private JTextField mYearTextField;
 	private JButton mAddPrivateFundButton;
 	private JButton mAddPublicFundButton;
 	private JButton mAddFixedIncomeButton;
@@ -73,10 +82,11 @@ public class CalculatorGUI extends JFrame{
 	}
 	
 	private void initializeVariables() {
-		this.portfolio = new Portfolio(0.00);
+		this.portfolio = new Portfolio(0.00, 0.00);
 		// northPanel
 		this.mTotalFundsTextField = new JTextField();
-		this.mTotalFundsButton = new JButton("设置投资资金规模(万元)");
+		this.mCashLowerLimitTextField = new JTextField();
+		this.mTotalFundsButton = new JButton("设置投资组合参数");
 		// centerPanel
 		this.mTotalFundsLabel = new JLabel();
 		this.mTotalPositionLabel = new JLabel();
@@ -84,6 +94,12 @@ public class CalculatorGUI extends JFrame{
 		this.mTotalCashLabel = new JLabel();
 		this.mTotalEARLabel = new JLabel();
 		this.mTotalEarningLabel = new JLabel();
+		this.mPrivateFundWeightLabel = new JLabel();
+		this.mPublicFundWeightLabel = new JLabel();
+		this.mFixedIncomeWeightLabel = new JLabel();
+		this.mCommodityWeightLabel = new JLabel();
+		this.mCurrencyWeightLabel = new JLabel();
+		this.mOtherWeightLabel = new JLabel();
 		this.mAssetModel = new DefaultTableModel() {
 			@Override
 			   public boolean isCellEditable(int row, int column) {
@@ -107,12 +123,12 @@ public class CalculatorGUI extends JFrame{
 		this.mNameTextField = new JTextField();
 		this.mEARTextField = new JTextField();
 		this.mTotalTextField = new JTextField();
-		this.mAddPrivateFundButton = new JButton("添加私募类产品");
-		this.mAddPublicFundButton = new JButton("添加公募类产品");
-		this.mAddFixedIncomeButton = new JButton("添加固收类产品");
-		this.mAddCommodityButton = new JButton("添加商品类产品");
-		this.mAddCurrencyButton = new JButton("添加货币类产品");
-		this.mAddOtherButton = new JButton("添加另类产品");
+		this.mAddPrivateFundButton = new JButton("添加私募类");
+		this.mAddPublicFundButton = new JButton("添加公募类");
+		this.mAddFixedIncomeButton = new JButton("添加固收类");
+		this.mAddCommodityButton = new JButton("添加商品类");
+		this.mAddCurrencyButton = new JButton("添加货币类");
+		this.mAddOtherButton = new JButton("添加另类");
 		this.mRemoveTextField = new JTextField();
 		this.mRemoveButton = new JButton("移除此产品");
 		this.mRemoveAllButton = new JButton("一键清空");
@@ -139,6 +155,30 @@ public class CalculatorGUI extends JFrame{
 				StringConstants.TotalEAR +
 				Math.round(portfolio.getTotalEAR() * 100.00) / 100.00 +
 				StringConstants.BaiFenShu);
+		this.mPrivateFundWeightLabel.setText(
+				StringConstants.PrivateFundWeight +
+				Math.round(portfolio.getPrivateFundPercentage() * 100.00) / 100.00 +
+				StringConstants.BaiFenShu + " | ");
+		this.mPublicFundWeightLabel.setText(
+				StringConstants.PublicFundWeight +
+				Math.round(portfolio.getPublicFundPercentage() * 100.00) / 100.00 +
+				StringConstants.BaiFenShu + " | ");
+		this.mFixedIncomeWeightLabel.setText(
+				StringConstants.FixedIncomeWeight +
+				Math.round(portfolio.getFixedIncomePercentage() * 100.00) / 100.00 +
+				StringConstants.BaiFenShu + " | ");
+		this.mCommodityWeightLabel.setText(
+				StringConstants.CommodityWeight +
+				Math.round(portfolio.getCommodityPercentage() * 100.00) / 100.00 +
+				StringConstants.BaiFenShu + " | ");
+		this.mCurrencyWeightLabel.setText(
+				StringConstants.CurrencyWeight +
+				Math.round(portfolio.getCurrencyPercentage() * 100.00) / 100.00 +
+				StringConstants.BaiFenShu + " | ");
+		this.mOtherWeightLabel.setText(
+				StringConstants.OtherWeight +
+				Math.round(portfolio.getOtherPercentage() * 100.00) / 100.00 +
+				StringConstants.BaiFenShu);
 		for (int i = 0; i < mAssetModel.getRowCount(); i++) {
 			mAssetModel.setValueAt(Integer.toString(i + 1), i, 0);
 		}
@@ -146,7 +186,7 @@ public class CalculatorGUI extends JFrame{
 	
 	private void createGUI() {
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		this.setSize(1000, 600);
+		this.setSize(1060, 600);
 		this.setLocation((dim.width / 2) - (this.getSize().width / 2), (dim.height / 2) - (this.getSize().height / 2));
 		this.add(this.createNorthPanel(), BorderLayout.NORTH);
 		this.add(this.createCenterPanel(), BorderLayout.CENTER);
@@ -160,12 +200,17 @@ public class CalculatorGUI extends JFrame{
 		JLabel companyLabel = new JLabel("华泰证券无锡分公司");
 		JLabel calculatorLabel = new JLabel("投资组合预期年化收益率计算器");
 		JPanel northSouthPanel = new JPanel();
+		GraphicSettings.setBackground(GraphicConstants.darkGrey, mTotalFundsButton);
 		GraphicSettings.setFont(GraphicConstants.fontLarge, companyLabel);
 		GraphicSettings.setFont(GraphicConstants.fontMedium, calculatorLabel);
-		GraphicSettings.setSize(240, 35, mTotalFundsTextField);
-		GraphicSettings.setSize(160, 35, mTotalFundsButton);
+		GraphicSettings.setFont(GraphicConstants.fontSmallest, mTotalFundsButton);
+		GraphicSettings.setForeground(GraphicConstants.veryLightGrey, mTotalFundsButton);
+		GraphicSettings.setOpaque(mTotalFundsButton);
+		GraphicSettings.setSize(200, 35, mTotalFundsTextField, mCashLowerLimitTextField);
+		GraphicSettings.setSize(200, 35, mTotalFundsButton);
 		GraphicSettings.setTextAlignment(companyLabel, calculatorLabel);
 		northSouthPanel.add(mTotalFundsTextField);
+		northSouthPanel.add(mCashLowerLimitTextField);
 		northSouthPanel.add(mTotalFundsButton);
 		northPanel.add(companyLabel, BorderLayout.NORTH);
 		northPanel.add(calculatorLabel, BorderLayout.CENTER);
@@ -176,11 +221,24 @@ public class CalculatorGUI extends JFrame{
 	private JPanel createCenterPanel() {
 		JPanel centerPanel = new JPanel(new BorderLayout());
 		JPanel centerNorthPanel = new JPanel();
-		centerNorthPanel.add(mTotalFundsLabel);
-		centerNorthPanel.add(mTotalPositionLabel);
-		centerNorthPanel.add(mTotalFeesLabel);
-		centerNorthPanel.add(mTotalCashLabel);
-		centerNorthPanel.add(mTotalEARLabel);
+		JPanel amountPanel = new JPanel();
+		JPanel percentPanel = new JPanel();
+		GraphicSettings.setFont(GraphicConstants.fontSmallNoBold, mTotalFundsLabel, mTotalPositionLabel, mTotalFeesLabel, mTotalCashLabel, mTotalEARLabel);
+		GraphicSettings.setFont(GraphicConstants.fontSmallNoBold, mPrivateFundWeightLabel, mPublicFundWeightLabel, mFixedIncomeWeightLabel, mCommodityWeightLabel, mCurrencyWeightLabel, mOtherWeightLabel);
+		amountPanel.add(mTotalFundsLabel);
+		amountPanel.add(mTotalPositionLabel);
+		amountPanel.add(mTotalFeesLabel);
+		amountPanel.add(mTotalCashLabel);
+		amountPanel.add(mTotalEARLabel);
+		percentPanel.add(mPrivateFundWeightLabel);
+		percentPanel.add(mPublicFundWeightLabel);
+		percentPanel.add(mFixedIncomeWeightLabel);
+		percentPanel.add(mCommodityWeightLabel);
+		percentPanel.add(mCurrencyWeightLabel);
+		percentPanel.add(mOtherWeightLabel);
+		centerNorthPanel.setLayout(new BoxLayout(centerNorthPanel, BoxLayout.Y_AXIS));
+		centerNorthPanel.add(amountPanel);
+		centerNorthPanel.add(percentPanel);
 		centerPanel.add(centerNorthPanel, BorderLayout.NORTH);
 		centerPanel.add(mScrollPane, BorderLayout.CENTER);
 		centerPanel.add(mAlertLabel, BorderLayout.SOUTH);
@@ -192,10 +250,12 @@ public class CalculatorGUI extends JFrame{
 		JPanel southNorthPanel = new JPanel();
 		JPanel southCenterPanel = new JPanel();
 		JPanel southSouthPanel = new JPanel();
+		GraphicSettings.setBackground(GraphicConstants.greenText, mAddPrivateFundButton, mAddPublicFundButton, mAddFixedIncomeButton, mAddCommodityButton, mAddCurrencyButton, mAddOtherButton);
+		GraphicSettings.setBackground(GraphicConstants.redText, mRemoveButton, mRemoveAllButton);
 		GraphicSettings.setFont(GraphicConstants.fontMedium, mAlertLabel);
 		GraphicSettings.setFont(GraphicConstants.fontSmallest, mAddPrivateFundButton, mAddPublicFundButton, mAddFixedIncomeButton, mAddCommodityButton, mAddCurrencyButton, mAddOtherButton, mRemoveButton, mRemoveAllButton);
-		GraphicSettings.setForeground(GraphicConstants.greenText, mAddPrivateFundButton, mAddPublicFundButton, mAddFixedIncomeButton, mAddCommodityButton, mAddCurrencyButton, mAddOtherButton);
-		GraphicSettings.setForeground(GraphicConstants.redText, mRemoveButton, mRemoveAllButton);
+		GraphicSettings.setForeground(GraphicConstants.veryLightGrey, mAddPrivateFundButton, mAddPublicFundButton, mAddFixedIncomeButton, mAddCommodityButton, mAddCurrencyButton, mAddOtherButton);
+		GraphicSettings.setOpaque(mAddPrivateFundButton, mAddPublicFundButton, mAddFixedIncomeButton, mAddCommodityButton, mAddCurrencyButton, mAddOtherButton, mRemoveButton, mRemoveAllButton);
 		GraphicSettings.setSize(240, 35, mCodeTextField, mNameTextField, mEARTextField, mTotalTextField, mRemoveTextField);
 		GraphicSettings.setSize(120, 35, mAddPrivateFundButton, mAddPublicFundButton, mAddFixedIncomeButton, mAddCommodityButton, mAddCurrencyButton, mAddOtherButton, mRemoveButton, mRemoveAllButton);
 		GraphicSettings.setTextAlignment(mAlertLabel);
@@ -223,7 +283,10 @@ public class CalculatorGUI extends JFrame{
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		this.mTotalFundsTextField.addFocusListener(
-			new TextFieldFocusListener("请输入投资资金规模", this.mTotalFundsTextField));
+				new TextFieldFocusListener("请输入投资资金规模(万元)", this.mTotalFundsTextField));
+		
+		this.mCashLowerLimitTextField.addFocusListener(
+				new TextFieldFocusListener("请输入空仓规模下限(万元)", this.mCashLowerLimitTextField));
 		
 		this.mCodeTextField.addFocusListener(
 				new TextFieldFocusListener("请输入产品代码", this.mCodeTextField));
@@ -246,10 +309,24 @@ public class CalculatorGUI extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				try {
 					double inTotalFunds = Double.parseDouble(mTotalFundsTextField.getText());
-					portfolio.setTotalFunds(inTotalFunds);
-					updateDisplay();
-					GraphicSettings.setForeground(GraphicConstants.greenText, mAlertLabel);
-					mAlertLabel.setText(StringConstants.TotalFundsChangedAlert);
+					try {
+						double inCashLowerLimit = Double.parseDouble(mCashLowerLimitTextField.getText());
+						if (inCashLowerLimit < 0 || inCashLowerLimit > inTotalFunds) {
+							GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+							mAlertLabel.setText(StringConstants.InvalidCashLowerLimitAlert);
+							return;
+						}
+						else {
+							portfolio.setTotalFunds(inTotalFunds);
+							portfolio.setCashLowerLimit(inCashLowerLimit);
+							updateDisplay();
+							GraphicSettings.setForeground(GraphicConstants.greenText, mAlertLabel);
+							mAlertLabel.setText(StringConstants.TotalFundsChangedAlert);
+						}
+					} catch (Exception exc) {
+						GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+						mAlertLabel.setText(StringConstants.InvalidCashLowerLimitAlert);
+					}
 				} catch (Exception exc) {
 					GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
 					mAlertLabel.setText(StringConstants.InvalidTotalFundsAlert);
@@ -278,7 +355,7 @@ public class CalculatorGUI extends JFrame{
 					double inEAR = Double.parseDouble(mEARTextField.getText()) / 100.00;
 					try {
 						double inTotal = Double.parseDouble(mTotalTextField.getText());
-						if (inTotal > portfolio.getTotalCash()) {
+						if (inTotal > portfolio.getTotalCash() - portfolio.getCashLowerLimit()) {
 							GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
 							mAlertLabel.setText(StringConstants.InsufficientCashAlert);
 							return;
@@ -287,7 +364,7 @@ public class CalculatorGUI extends JFrame{
 							GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
 							mAlertLabel.setText(StringConstants.InvalidPrivateFundPositionAlert);
 						} else {
-							InstrumentFinancial newAsset = new PrivateFund(inCode, inName, inEAR, inTotal);
+							InstrumentFinancial newAsset = new PrivateFund(inCode, inName, inEAR, inTotal, 1.00);
 							mAssetModel.addRow(new Object[] {
 									Integer.toString(mAssetModel.getRowCount() + 1), 
 									newAsset.getCode(), newAsset.getName(), "私募基金类", 
@@ -332,12 +409,12 @@ public class CalculatorGUI extends JFrame{
 					double inEAR = Double.parseDouble(mEARTextField.getText()) / 100.00;
 					try {
 						double inTotal = Double.parseDouble(mTotalTextField.getText());
-						if (inTotal > portfolio.getTotalCash()) {
+						if (inTotal > portfolio.getTotalCash() - portfolio.getCashLowerLimit()) {
 							GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
 							mAlertLabel.setText(StringConstants.InsufficientCashAlert);
 							return;
 						}
-						InstrumentFinancial newAsset = new PublicFund(inCode, inName, inEAR, inTotal);
+						InstrumentFinancial newAsset = new PublicFund(inCode, inName, inEAR, inTotal, 1.00);
 						mAssetModel.addRow(new String[] {
 								Integer.toString(mAssetModel.getRowCount() + 1), 
 								newAsset.getCode(), newAsset.getName(), "公募基金类", 
@@ -381,12 +458,12 @@ public class CalculatorGUI extends JFrame{
 					double inEAR = Double.parseDouble(mEARTextField.getText()) / 100.00;
 					try {
 						double inTotal = Double.parseDouble(mTotalTextField.getText());
-						if (inTotal > portfolio.getTotalCash()) {
+						if (inTotal > portfolio.getTotalCash() - portfolio.getCashLowerLimit()) {
 							GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
 							mAlertLabel.setText(StringConstants.InsufficientCashAlert);
 							return;
 						}
-						InstrumentFinancial newAsset = new FixedIncome(inCode, inName, inEAR, inTotal);
+						InstrumentFinancial newAsset = new FixedIncome(inCode, inName, inEAR, inTotal, 1.00);
 						mAssetModel.addRow(new String[] {
 								Integer.toString(mAssetModel.getRowCount() + 1), 
 								newAsset.getCode(), newAsset.getName(), "固定收益类", 
@@ -430,12 +507,12 @@ public class CalculatorGUI extends JFrame{
 					double inEAR = Double.parseDouble(mEARTextField.getText()) / 100.00;
 					try {
 						double inTotal = Double.parseDouble(mTotalTextField.getText());
-						if (inTotal > portfolio.getTotalCash()) {
+						if (inTotal > portfolio.getTotalCash() - portfolio.getCashLowerLimit()) {
 							GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
 							mAlertLabel.setText(StringConstants.InsufficientCashAlert);
 							return;
 						}
-						InstrumentFinancial newAsset = new Commodity(inCode, inName, inEAR, inTotal);
+						InstrumentFinancial newAsset = new Commodity(inCode, inName, inEAR, inTotal, 1.00);
 						mAssetModel.addRow(new String[] {
 								Integer.toString(mAssetModel.getRowCount() + 1), 
 								newAsset.getCode(), newAsset.getName(), "大宗商品类", 
@@ -479,12 +556,12 @@ public class CalculatorGUI extends JFrame{
 					double inEAR = Double.parseDouble(mEARTextField.getText()) / 100.00;
 					try {
 						double inTotal = Double.parseDouble(mTotalTextField.getText());
-						if (inTotal > portfolio.getTotalCash()) {
+						if (inTotal > portfolio.getTotalCash() - portfolio.getCashLowerLimit()) {
 							GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
 							mAlertLabel.setText(StringConstants.InsufficientCashAlert);
 							return;
 						}
-						InstrumentFinancial newAsset = new Currency(inCode, inName, inEAR, inTotal);
+						InstrumentFinancial newAsset = new Currency(inCode, inName, inEAR, inTotal, 1.00);
 						mAssetModel.addRow(new String[] {
 								Integer.toString(mAssetModel.getRowCount() + 1), 
 								newAsset.getCode(), newAsset.getName(), "货币类", 
@@ -528,12 +605,12 @@ public class CalculatorGUI extends JFrame{
 					double inEAR = Double.parseDouble(mEARTextField.getText()) / 100.00;
 					try {
 						double inTotal = Double.parseDouble(mTotalTextField.getText());
-						if (inTotal > portfolio.getTotalCash()) {
+						if (inTotal > portfolio.getTotalCash() - portfolio.getCashLowerLimit()) {
 							GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
 							mAlertLabel.setText(StringConstants.InsufficientCashAlert);
 							return;
 						}
-						InstrumentFinancial newAsset = new Other(inCode, inName, inEAR, inTotal);
+						InstrumentFinancial newAsset = new Other(inCode, inName, inEAR, inTotal, 1.00);
 						mAssetModel.addRow(new String[] {
 								Integer.toString(mAssetModel.getRowCount() + 1), 
 								newAsset.getCode(), newAsset.getName(), "另类", 

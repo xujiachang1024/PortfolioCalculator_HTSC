@@ -6,6 +6,7 @@ import java.util.List;
 public class Portfolio {
 	
 	private Double mTotalFunds;						// 投资资金总规模（单位：万元）
+	private Double mCashLowerLimit;					// 空仓规模下限（单位：万元）
 	private Double mTotalPosition; 					// 实际仓位总金额（单位：万元）
 	private Double mTotalFees;						// 管理费用总金额（单位：万元）
 	private Double mTotalCash;						// 空仓规模（单位：万元）
@@ -19,8 +20,9 @@ public class Portfolio {
 	private Double mTotalOther;						// 另类产品投入金额（单位：万元）
 	private List<InstrumentFinancial> mAllAssets;	// 投资组合列表
 
-	public Portfolio(double inTotalFunds) {
+	public Portfolio(double inTotalFunds, double inCashLowerLimit) {
 		this.mTotalFunds = inTotalFunds;
+		this.mCashLowerLimit = inCashLowerLimit;
 		this.mTotalPosition = 0.00;
 		this.mTotalFees = 0.00;
 		this.mTotalEarning = 0.00;
@@ -56,6 +58,11 @@ public class Portfolio {
 	
 	public void setTotalFunds(double inTotalFunds) {
 		this.mTotalFunds = inTotalFunds;
+		this.updateMemebrs();
+	}
+	
+	public void setCashLowerLimit(double inCashLowerLimit) {
+		this.mCashLowerLimit = inCashLowerLimit;
 		this.updateMemebrs();
 	}
 	
@@ -153,6 +160,10 @@ public class Portfolio {
 		return mTotalFunds;
 	}
 	
+	public double getCashLowerLimit() {
+		return mCashLowerLimit;
+	}
+	
 	public double getTotalPosition() {
 		return mTotalPosition;
 	}
@@ -167,6 +178,66 @@ public class Portfolio {
 	
 	public double getTotalEAR() {
 		return mTotalEAR;
+	}
+	
+	public double getPrivateFundPercentage() {
+		if (mTotalPosition + mTotalFees == 0) {
+			return 0.00;
+		}
+		else {
+			double percentage = mTotalPrivateFund / (mTotalPosition + mTotalFees);
+			return percentage * 100.00;
+		}
+	}
+	
+	public double getPublicFundPercentage() {
+		if (mTotalPosition + mTotalFees == 0) {
+			return 0.00;
+		}
+		else {
+			double percentage = mTotalPublicFund / (mTotalPosition + mTotalFees);
+			return percentage * 100.00;
+		}
+	}
+	
+	public double getFixedIncomePercentage() {
+		if (mTotalPosition + mTotalFees == 0) {
+			return 0.00;
+		}
+		else {
+			double percentage = mTotalFixedIncome / (mTotalPosition + mTotalFees) ;
+			return percentage * 100.00;
+		}
+	}
+	
+	public double getCommodityPercentage() {
+		if (mTotalPosition + mTotalFees == 0) {
+			return 0.00;
+		}
+		else {
+			double percentage = mTotalCommodity / (mTotalPosition + mTotalFees);
+			return percentage * 100.00;
+		}
+	}
+	
+	public double getCurrencyPercentage() {
+		if (mTotalPosition + mTotalFees == 0) {
+			return 0.00;
+		}
+		else {
+			double percentage = mTotalCurrency / (mTotalPosition + mTotalFees);
+			return percentage * 100.00;
+		}
+	}
+	
+	public double getOtherPercentage() {
+		if (mTotalPosition + mTotalFees == 0) {
+			return 0.00;
+		}
+		else {
+			double percentage = mTotalOther / (mTotalPosition + mTotalFees);
+			return percentage * 100.00;
+		}
 	}
 	
 	public List<InstrumentFinancial> getAllAssets() {
