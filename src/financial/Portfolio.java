@@ -101,19 +101,19 @@ public class Portfolio {
 		if (oldAsset instanceof PrivateFund) {
 			this.mTotalPrivateFund -= oldAsset.getTotal();
 		}
-		if (oldAsset instanceof PublicFund) {
+		else if (oldAsset instanceof PublicFund) {
 			this.mTotalPublicFund -= oldAsset.getTotal();
 		}
-		if (oldAsset instanceof FixedIncome) {
+		else if (oldAsset instanceof FixedIncome) {
 			this.mTotalFixedIncome -= oldAsset.getTotal();
 		}
-		if (oldAsset instanceof Commodity) {
+		else if (oldAsset instanceof Commodity) {
 			this.mTotalCommodity -= oldAsset.getTotal();
 		}
-		if (oldAsset instanceof Currency) {
+		else if (oldAsset instanceof Currency) {
 			this.mTotalCurrency -= oldAsset.getTotal();
 		}
-		if (oldAsset instanceof Other) {
+		else if (oldAsset instanceof Other) {
 			this.mTotalOther -= oldAsset.getTotal();
 		}
 		return true;
@@ -128,19 +128,19 @@ public class Portfolio {
 			if (oldAsset instanceof PrivateFund) {
 				this.mTotalPrivateFund -= oldAsset.getTotal();
 			}
-			if (oldAsset instanceof PublicFund) {
+			else if (oldAsset instanceof PublicFund) {
 				this.mTotalPublicFund -= oldAsset.getTotal();
 			}
-			if (oldAsset instanceof FixedIncome) {
+			else if (oldAsset instanceof FixedIncome) {
 				this.mTotalFixedIncome -= oldAsset.getTotal();
 			}
-			if (oldAsset instanceof Commodity) {
+			else if (oldAsset instanceof Commodity) {
 				this.mTotalCommodity -= oldAsset.getTotal();
 			}
-			if (oldAsset instanceof Currency) {
+			else if (oldAsset instanceof Currency) {
 				this.mTotalCurrency -= oldAsset.getTotal();
 			}
-			if (oldAsset instanceof Other) {
+			else if (oldAsset instanceof Other) {
 				this.mTotalOther -= oldAsset.getTotal();
 			}
 			return true;
