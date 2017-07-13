@@ -75,19 +75,19 @@ public class Portfolio {
 		if (newAsset instanceof PrivateFund) {
 			this.mTotalPrivateFund += newAsset.getTotal();
 		}
-		if (newAsset instanceof PublicFund) {
+		else if (newAsset instanceof PublicFund) {
 			this.mTotalPublicFund += newAsset.getTotal();
 		}
-		if (newAsset instanceof FixedIncome) {
+		else if (newAsset instanceof FixedIncome) {
 			this.mTotalFixedIncome += newAsset.getTotal();
 		}
-		if (newAsset instanceof Commodity) {
+		else if (newAsset instanceof Commodity) {
 			this.mTotalCommodity += newAsset.getTotal();
 		}
-		if (newAsset instanceof Currency) {
+		else if (newAsset instanceof Currency) {
 			this.mTotalCurrency += newAsset.getTotal();
 		}
-		if (newAsset instanceof Other) {
+		else if (newAsset instanceof Other) {
 			this.mTotalOther += newAsset.getTotal();
 		}
 	}
