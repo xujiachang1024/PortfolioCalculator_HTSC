@@ -1,24 +1,27 @@
 package financial;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Portfolio {
 	
-	private Double mTotalFunds;						// 投资资金总规模（单位：万元）
-	private Double mCashLowerLimit;					// 空仓规模下限（单位：万元）
-	private Double mTotalPosition; 					// 实际仓位总金额（单位：万元）
-	private Double mTotalFees;						// 管理费用总金额（单位：万元）
-	private Double mTotalCash;						// 空仓规模（单位：万元）
-	private Double mTotalEarning;					// 投资组合预期回报（单位：万元）
-	private Double mTotalEAR;						// 投资组合预期年化收益率（单位：%)
-	private Double mTotalPrivateFund;				// 私募基金类产品投入金额（单位：万元）
-	private Double mTotalPublicFund;				// 公募基金类产品投入金额（单位：万元）
-	private Double mTotalFixedIncome;				// 固定收益类产品投入金额（单位：万元）
-	private Double mTotalCommodity;					// 大宗商品类产品投入金额（单位：万元）
-	private Double mTotalCurrency;					// 货币类产品投入金额（单位：万元）
-	private Double mTotalOther;						// 另类产品投入金额（单位：万元）
-	private List<InstrumentFinancial> mAllAssets;	// 投资组合列表
+	private Double mTotalFunds;							// 投资资金总规模（单位：万元）
+	private Double mCashLowerLimit;						// 空仓规模下限（单位：万元）
+	private Double mTotalPosition; 						// 实际仓位总金额（单位：万元）
+	private Double mTotalFees;							// 管理费用总金额（单位：万元）
+	private Double mTotalCash;							// 空仓规模（单位：万元）
+	private Double mTotalEarning;						// 投资组合预期回报（单位：万元）
+	private Double mTotalEAR;							// 投资组合预期年化收益率（单位：%)
+	private Double mTotalPrivateFund;					// 私募基金类产品投入金额（单位：万元）
+	private Double mTotalPublicFund;					// 公募基金类产品投入金额（单位：万元）
+	private Double mTotalFixedIncome;					// 固定收益类产品投入金额（单位：万元）
+	private Double mTotalCommodity;						// 大宗商品类产品投入金额（单位：万元）
+	private Double mTotalCurrency;						// 货币类产品投入金额（单位：万元）
+	private Double mTotalOther;							// 另类产品投入金额（单位：万元）
+//	private List<InstrumentFinancial> mAllAssets;		// 投资产品列表
+	private Map<String, InstrumentFinancial> mAssetMap; // 投资产品检索
 
 	public Portfolio(double inTotalFunds, double inCashLowerLimit) {
 		this.mTotalFunds = inTotalFunds;
@@ -32,7 +35,8 @@ public class Portfolio {
 		this.mTotalCommodity = 0.00;
 		this.mTotalCurrency = 0.00;
 		this.mTotalOther = 0.00;
-		this.mAllAssets = new ArrayList<InstrumentFinancial>();
+//		this.mAllAssets = new ArrayList<InstrumentFinancial>();
+		this.mAssetMap = new HashMap<String, InstrumentFinancial>();
 		this.updateMemebrs();
 	}
 	
@@ -66,8 +70,12 @@ public class Portfolio {
 		this.updateMemebrs();
 	}
 	
-	public void add(InstrumentFinancial newAsset) {
-		this.mAllAssets.add(newAsset);
+	public boolean add(InstrumentFinancial newAsset) {
+//		this.mAllAssets.add(newAsset);
+		if (mAssetMap.containsKey(newAsset.getCode())) {
+			return false;
+		}
+		this.mAssetMap.put(newAsset.getCode(), newAsset);
 		this.mTotalPosition += newAsset.getPosition();
 		this.mTotalFees += newAsset.getFee();
 		this.mTotalEarning += newAsset.getEarning();
@@ -90,10 +98,14 @@ public class Portfolio {
 		else if (newAsset instanceof Other) {
 			this.mTotalOther += newAsset.getTotal();
 		}
+		return true;
 	}
 	
-	public boolean remove(int index) {
-		InstrumentFinancial oldAsset = mAllAssets.remove(index);
+	public boolean remove(String inCode) {
+		InstrumentFinancial oldAsset = mAssetMap.remove(inCode);
+		if (oldAsset == null) {
+			return false;
+		}
 		this.mTotalPosition -= oldAsset.getPosition();
 		this.mTotalFees -= oldAsset.getFee();
 		this.mTotalEarning -= oldAsset.getEarning();
@@ -119,40 +131,68 @@ public class Portfolio {
 		return true;
 	}
 	
-	public boolean remove(InstrumentFinancial oldAsset) {
-		if (this.mAllAssets.remove(oldAsset)) {
-			this.mTotalPosition -= oldAsset.getPosition();
-			this.mTotalFees -= oldAsset.getFee();
-			this.mTotalEarning -= oldAsset.getEarning();
-			this.updateMemebrs();
-			if (oldAsset instanceof PrivateFund) {
-				this.mTotalPrivateFund -= oldAsset.getTotal();
-			}
-			else if (oldAsset instanceof PublicFund) {
-				this.mTotalPublicFund -= oldAsset.getTotal();
-			}
-			else if (oldAsset instanceof FixedIncome) {
-				this.mTotalFixedIncome -= oldAsset.getTotal();
-			}
-			else if (oldAsset instanceof Commodity) {
-				this.mTotalCommodity -= oldAsset.getTotal();
-			}
-			else if (oldAsset instanceof Currency) {
-				this.mTotalCurrency -= oldAsset.getTotal();
-			}
-			else if (oldAsset instanceof Other) {
-				this.mTotalOther -= oldAsset.getTotal();
-			}
-			return true;
-		}
-		return false;
-	}
+//	public boolean remove(int index) {
+//		InstrumentFinancial oldAsset = mAllAssets.remove(index);
+//		this.mTotalPosition -= oldAsset.getPosition();
+//		this.mTotalFees -= oldAsset.getFee();
+//		this.mTotalEarning -= oldAsset.getEarning();
+//		this.updateMemebrs();
+//		if (oldAsset instanceof PrivateFund) {
+//			this.mTotalPrivateFund -= oldAsset.getTotal();
+//		}
+//		else if (oldAsset instanceof PublicFund) {
+//			this.mTotalPublicFund -= oldAsset.getTotal();
+//		}
+//		else if (oldAsset instanceof FixedIncome) {
+//			this.mTotalFixedIncome -= oldAsset.getTotal();
+//		}
+//		else if (oldAsset instanceof Commodity) {
+//			this.mTotalCommodity -= oldAsset.getTotal();
+//		}
+//		else if (oldAsset instanceof Currency) {
+//			this.mTotalCurrency -= oldAsset.getTotal();
+//		}
+//		else if (oldAsset instanceof Other) {
+//			this.mTotalOther -= oldAsset.getTotal();
+//		}
+//		return true;
+//	}
+	
+//	public boolean remove(InstrumentFinancial oldAsset) {
+//		if (this.mAllAssets.remove(oldAsset)) {
+//			this.mTotalPosition -= oldAsset.getPosition();
+//			this.mTotalFees -= oldAsset.getFee();
+//			this.mTotalEarning -= oldAsset.getEarning();
+//			this.updateMemebrs();
+//			if (oldAsset instanceof PrivateFund) {
+//				this.mTotalPrivateFund -= oldAsset.getTotal();
+//			}
+//			else if (oldAsset instanceof PublicFund) {
+//				this.mTotalPublicFund -= oldAsset.getTotal();
+//			}
+//			else if (oldAsset instanceof FixedIncome) {
+//				this.mTotalFixedIncome -= oldAsset.getTotal();
+//			}
+//			else if (oldAsset instanceof Commodity) {
+//				this.mTotalCommodity -= oldAsset.getTotal();
+//			}
+//			else if (oldAsset instanceof Currency) {
+//				this.mTotalCurrency -= oldAsset.getTotal();
+//			}
+//			else if (oldAsset instanceof Other) {
+//				this.mTotalOther -= oldAsset.getTotal();
+//			}
+//			return true;
+//		}
+//		return false;
+//	}
 	
 	public void removeAll() {
 		this.mTotalPosition = 0.00;
 		this.mTotalFees = 0.00;
 		this.mTotalEarning = 0.00;
-		this.mAllAssets = new ArrayList<InstrumentFinancial>();
+//		this.mAllAssets.clear();
+		this.mAssetMap.clear();
 		this.updateMemebrs();
 	}
 	
@@ -240,7 +280,11 @@ public class Portfolio {
 		}
 	}
 	
-	public List<InstrumentFinancial> getAllAssets() {
-		return mAllAssets;
+//	public List<InstrumentFinancial> getAllAssets() {
+//		return mAllAssets;
+//	}
+	
+	public Map<String, InstrumentFinancial> getAssetMap() {
+		return mAssetMap;
 	}
 }

@@ -75,7 +75,7 @@ public class CalculatorGUI extends JFrame{
 	private JButton mRemoveAllButton;
 
 	public CalculatorGUI() {
-		super("华泰证券投资组合收益计算器");
+		super("华泰证券投资组合收益计算器 Beta");
 		this.initializeVariables();
 		this.createGUI();
 		this.addListeners();
@@ -201,9 +201,9 @@ public class CalculatorGUI extends JFrame{
 		JLabel calculatorLabel = new JLabel("投资组合预期年化收益率计算器");
 		JPanel northSouthPanel = new JPanel();
 		GraphicSettings.setBackground(GraphicConstants.darkGrey, mTotalFundsButton);
-		GraphicSettings.setFont(GraphicConstants.fontLarge, companyLabel);
-		GraphicSettings.setFont(GraphicConstants.fontMedium, calculatorLabel);
-		GraphicSettings.setFont(GraphicConstants.fontSmallest, mTotalFundsButton);
+//		GraphicSettings.setFont(GraphicConstants.fontLarge, companyLabel);
+//		GraphicSettings.setFont(GraphicConstants.fontMedium, calculatorLabel);
+//		GraphicSettings.setFont(GraphicConstants.fontSmallest, mTotalFundsButton);
 		GraphicSettings.setForeground(GraphicConstants.veryLightGrey, mTotalFundsButton);
 		GraphicSettings.setOpaque(mTotalFundsButton);
 		GraphicSettings.setSize(200, 35, mTotalFundsTextField, mCashLowerLimitTextField);
@@ -223,8 +223,8 @@ public class CalculatorGUI extends JFrame{
 		JPanel centerNorthPanel = new JPanel();
 		JPanel amountPanel = new JPanel();
 		JPanel percentPanel = new JPanel();
-		GraphicSettings.setFont(GraphicConstants.fontSmallNoBold, mTotalFundsLabel, mTotalPositionLabel, mTotalFeesLabel, mTotalCashLabel, mTotalEARLabel);
-		GraphicSettings.setFont(GraphicConstants.fontSmallNoBold, mPrivateFundWeightLabel, mPublicFundWeightLabel, mFixedIncomeWeightLabel, mCommodityWeightLabel, mCurrencyWeightLabel, mOtherWeightLabel);
+//		GraphicSettings.setFont(GraphicConstants.fontSmallNoBold, mTotalFundsLabel, mTotalPositionLabel, mTotalFeesLabel, mTotalCashLabel, mTotalEARLabel);
+//		GraphicSettings.setFont(GraphicConstants.fontSmallNoBold, mPrivateFundWeightLabel, mPublicFundWeightLabel, mFixedIncomeWeightLabel, mCommodityWeightLabel, mCurrencyWeightLabel, mOtherWeightLabel);
 		amountPanel.add(mTotalFundsLabel);
 		amountPanel.add(mTotalPositionLabel);
 		amountPanel.add(mTotalFeesLabel);
@@ -252,8 +252,8 @@ public class CalculatorGUI extends JFrame{
 		JPanel southSouthPanel = new JPanel();
 		GraphicSettings.setBackground(GraphicConstants.greenText, mAddPrivateFundButton, mAddPublicFundButton, mAddFixedIncomeButton, mAddCommodityButton, mAddCurrencyButton, mAddOtherButton);
 		GraphicSettings.setBackground(GraphicConstants.redText, mRemoveButton, mRemoveAllButton);
-		GraphicSettings.setFont(GraphicConstants.fontMedium, mAlertLabel);
-		GraphicSettings.setFont(GraphicConstants.fontSmallest, mAddPrivateFundButton, mAddPublicFundButton, mAddFixedIncomeButton, mAddCommodityButton, mAddCurrencyButton, mAddOtherButton, mRemoveButton, mRemoveAllButton);
+//		GraphicSettings.setFont(GraphicConstants.fontMedium, mAlertLabel);
+//		GraphicSettings.setFont(GraphicConstants.fontSmallest, mAddPrivateFundButton, mAddPublicFundButton, mAddFixedIncomeButton, mAddCommodityButton, mAddCurrencyButton, mAddOtherButton, mRemoveButton, mRemoveAllButton);
 		GraphicSettings.setForeground(GraphicConstants.veryLightGrey, mAddPrivateFundButton, mAddPublicFundButton, mAddFixedIncomeButton, mAddCommodityButton, mAddCurrencyButton, mAddOtherButton);
 		GraphicSettings.setOpaque(mAddPrivateFundButton, mAddPublicFundButton, mAddFixedIncomeButton, mAddCommodityButton, mAddCurrencyButton, mAddOtherButton, mRemoveButton, mRemoveAllButton);
 		GraphicSettings.setSize(240, 35, mCodeTextField, mNameTextField, mEARTextField, mTotalTextField, mRemoveTextField);
@@ -301,7 +301,7 @@ public class CalculatorGUI extends JFrame{
 				new TextFieldFocusListener("请输入产品投入金额(万元)", this.mTotalTextField));
 		
 		this.mRemoveTextField.addFocusListener(
-				new TextFieldFocusListener("请输入需移除产品的列表编号", this.mRemoveTextField));
+				new TextFieldFocusListener("请输入需移除产品的产品代码", this.mRemoveTextField));
 		
 		this.mTotalFundsButton.addActionListener(new ActionListener() {
 
@@ -365,17 +365,23 @@ public class CalculatorGUI extends JFrame{
 							mAlertLabel.setText(StringConstants.InvalidPrivateFundPositionAlert);
 						} else {
 							InstrumentFinancial newAsset = new PrivateFund(inCode, inName, inEAR, inTotal, 1.00);
-							mAssetModel.addRow(new Object[] {
-									Integer.toString(mAssetModel.getRowCount() + 1), 
-									newAsset.getCode(), newAsset.getName(), "私募基金类", 
-									Double.toString(Math.round(newAsset.getEAR() * 10000.00) / 100.00) + StringConstants.BaiFenShu, 
-									Double.toString(Math.round(newAsset.getTotal() * 100.00) / 100.00) + StringConstants.WanYuan,
-									Double.toString(Math.round(newAsset.getEarning() * 100.00) / 100.00) + StringConstants.WanYuan
-							});
-							portfolio.add(newAsset);
-							updateDisplay();
-							GraphicSettings.setForeground(GraphicConstants.greenText, mAlertLabel);
-							mAlertLabel.setText(StringConstants.PrivateFundAddedAlert);
+							boolean addSuccess = portfolio.add(newAsset);
+							if (addSuccess) {
+								mAssetModel.addRow(new String[] {
+										Integer.toString(mAssetModel.getRowCount() + 1), 
+										newAsset.getCode(), newAsset.getName(), "私募基金类", 
+										Double.toString(Math.round(newAsset.getEAR() * 10000.00) / 100.00) + StringConstants.BaiFenShu, 
+										Double.toString(Math.round(newAsset.getTotal() * 100.00) / 100.00) + StringConstants.WanYuan,
+										Double.toString(Math.round(newAsset.getEarning() * 100.00) / 100.00) + StringConstants.WanYuan
+								});
+								updateDisplay();
+								GraphicSettings.setForeground(GraphicConstants.greenText, mAlertLabel);
+								mAlertLabel.setText(StringConstants.PrivateFundAddedAlert);
+							}
+							else {
+								GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+								mAlertLabel.setText(StringConstants.InvalidAddCodeAlert);
+							}
 						}
 					} catch (Exception exc) {
 						GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
@@ -415,17 +421,23 @@ public class CalculatorGUI extends JFrame{
 							return;
 						}
 						InstrumentFinancial newAsset = new PublicFund(inCode, inName, inEAR, inTotal, 1.00);
-						mAssetModel.addRow(new String[] {
-								Integer.toString(mAssetModel.getRowCount() + 1), 
-								newAsset.getCode(), newAsset.getName(), "公募基金类", 
-								Double.toString(Math.round(newAsset.getEAR() * 10000.00) / 100.00) + StringConstants.BaiFenShu, 
-								Double.toString(Math.round(newAsset.getTotal() * 100.00) / 100.00) + StringConstants.WanYuan,
-								Double.toString(Math.round(newAsset.getEarning() * 100.00) / 100.00) + StringConstants.WanYuan
-						});
-						portfolio.add(newAsset);
-						updateDisplay();
-						GraphicSettings.setForeground(GraphicConstants.greenText, mAlertLabel);
-						mAlertLabel.setText(StringConstants.PublicFundAddedAlert);
+						boolean addSuccess = portfolio.add(newAsset);
+						if (addSuccess) {
+							mAssetModel.addRow(new String[] {
+									Integer.toString(mAssetModel.getRowCount() + 1), 
+									newAsset.getCode(), newAsset.getName(), "公募基金类", 
+									Double.toString(Math.round(newAsset.getEAR() * 10000.00) / 100.00) + StringConstants.BaiFenShu, 
+									Double.toString(Math.round(newAsset.getTotal() * 100.00) / 100.00) + StringConstants.WanYuan,
+									Double.toString(Math.round(newAsset.getEarning() * 100.00) / 100.00) + StringConstants.WanYuan
+							});
+							updateDisplay();
+							GraphicSettings.setForeground(GraphicConstants.greenText, mAlertLabel);
+							mAlertLabel.setText(StringConstants.PublicFundAddedAlert);
+						}
+						else {
+							GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+							mAlertLabel.setText(StringConstants.InvalidAddCodeAlert);
+						}
 					} catch (Exception exc) {
 						GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
 						mAlertLabel.setText(StringConstants.InvalidTotalReadingAlert);
@@ -464,17 +476,23 @@ public class CalculatorGUI extends JFrame{
 							return;
 						}
 						InstrumentFinancial newAsset = new FixedIncome(inCode, inName, inEAR, inTotal, 1.00);
-						mAssetModel.addRow(new String[] {
-								Integer.toString(mAssetModel.getRowCount() + 1), 
-								newAsset.getCode(), newAsset.getName(), "固定收益类", 
-								Double.toString(Math.round(newAsset.getEAR() * 10000.00) / 100.00) + StringConstants.BaiFenShu, 
-								Double.toString(Math.round(newAsset.getTotal() * 100.00) / 100.00) + StringConstants.WanYuan,
-								Double.toString(Math.round(newAsset.getEarning() * 100.00) / 100.00) + StringConstants.WanYuan
-						});
-						portfolio.add(newAsset);
-						updateDisplay();
-						GraphicSettings.setForeground(GraphicConstants.greenText, mAlertLabel);
-						mAlertLabel.setText(StringConstants.FixedIncomeAddedAlert);
+						boolean addSuccess = portfolio.add(newAsset);
+						if (addSuccess) {
+							mAssetModel.addRow(new String[] {
+									Integer.toString(mAssetModel.getRowCount() + 1), 
+									newAsset.getCode(), newAsset.getName(), "固定收益类", 
+									Double.toString(Math.round(newAsset.getEAR() * 10000.00) / 100.00) + StringConstants.BaiFenShu, 
+									Double.toString(Math.round(newAsset.getTotal() * 100.00) / 100.00) + StringConstants.WanYuan,
+									Double.toString(Math.round(newAsset.getEarning() * 100.00) / 100.00) + StringConstants.WanYuan
+							});
+							updateDisplay();
+							GraphicSettings.setForeground(GraphicConstants.greenText, mAlertLabel);
+							mAlertLabel.setText(StringConstants.FixedIncomeAddedAlert);
+						}
+						else {
+							GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+							mAlertLabel.setText(StringConstants.InvalidAddCodeAlert);
+						}
 					} catch (Exception exc) {
 						GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
 						mAlertLabel.setText(StringConstants.InvalidTotalReadingAlert);
@@ -513,17 +531,23 @@ public class CalculatorGUI extends JFrame{
 							return;
 						}
 						InstrumentFinancial newAsset = new Commodity(inCode, inName, inEAR, inTotal, 1.00);
-						mAssetModel.addRow(new String[] {
-								Integer.toString(mAssetModel.getRowCount() + 1), 
-								newAsset.getCode(), newAsset.getName(), "大宗商品类", 
-								Double.toString(Math.round(newAsset.getEAR() * 10000.00) / 100.00) + StringConstants.BaiFenShu, 
-								Double.toString(Math.round(newAsset.getTotal() * 100.00) / 100.00) + StringConstants.WanYuan,
-								Double.toString(Math.round(newAsset.getEarning() * 100.00) / 100.00) + StringConstants.WanYuan
-						});
-						portfolio.add(newAsset);
-						updateDisplay();
-						GraphicSettings.setForeground(GraphicConstants.greenText, mAlertLabel);
-						mAlertLabel.setText(StringConstants.CommodityAddedAlert);
+						boolean addSuccess = portfolio.add(newAsset);
+						if (addSuccess) {
+							mAssetModel.addRow(new String[] {
+									Integer.toString(mAssetModel.getRowCount() + 1), 
+									newAsset.getCode(), newAsset.getName(), "大宗商品类", 
+									Double.toString(Math.round(newAsset.getEAR() * 10000.00) / 100.00) + StringConstants.BaiFenShu, 
+									Double.toString(Math.round(newAsset.getTotal() * 100.00) / 100.00) + StringConstants.WanYuan,
+									Double.toString(Math.round(newAsset.getEarning() * 100.00) / 100.00) + StringConstants.WanYuan
+							});
+							updateDisplay();
+							GraphicSettings.setForeground(GraphicConstants.greenText, mAlertLabel);
+							mAlertLabel.setText(StringConstants.CommodityAddedAlert);
+						}
+						else {
+							GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+							mAlertLabel.setText(StringConstants.InvalidAddCodeAlert);
+						}
 					} catch (Exception exc) {
 						GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
 						mAlertLabel.setText(StringConstants.InvalidTotalReadingAlert);
@@ -562,17 +586,23 @@ public class CalculatorGUI extends JFrame{
 							return;
 						}
 						InstrumentFinancial newAsset = new Currency(inCode, inName, inEAR, inTotal, 1.00);
-						mAssetModel.addRow(new String[] {
-								Integer.toString(mAssetModel.getRowCount() + 1), 
-								newAsset.getCode(), newAsset.getName(), "货币类", 
-								Double.toString(Math.round(newAsset.getEAR() * 10000.00) / 100.00) + StringConstants.BaiFenShu, 
-								Double.toString(Math.round(newAsset.getTotal() * 100.00) / 100.00) + StringConstants.WanYuan,
-								Double.toString(Math.round(newAsset.getEarning() * 100.00) / 100.00) + StringConstants.WanYuan
-						});
-						portfolio.add(newAsset);
-						updateDisplay();
-						GraphicSettings.setForeground(GraphicConstants.greenText, mAlertLabel);
-						mAlertLabel.setText(StringConstants.CurrencyAddedAlert);
+						boolean addSuccess = portfolio.add(newAsset);
+						if (addSuccess) {
+							mAssetModel.addRow(new String[] {
+									Integer.toString(mAssetModel.getRowCount() + 1), 
+									newAsset.getCode(), newAsset.getName(), "货币类", 
+									Double.toString(Math.round(newAsset.getEAR() * 10000.00) / 100.00) + StringConstants.BaiFenShu, 
+									Double.toString(Math.round(newAsset.getTotal() * 100.00) / 100.00) + StringConstants.WanYuan,
+									Double.toString(Math.round(newAsset.getEarning() * 100.00) / 100.00) + StringConstants.WanYuan
+							});
+							updateDisplay();
+							GraphicSettings.setForeground(GraphicConstants.greenText, mAlertLabel);
+							mAlertLabel.setText(StringConstants.CurrencyAddedAlert);
+						}
+						else {
+							GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+							mAlertLabel.setText(StringConstants.InvalidAddCodeAlert);
+						}
 					} catch (Exception exc) {
 						GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
 						mAlertLabel.setText(StringConstants.InvalidTotalReadingAlert);
@@ -611,17 +641,23 @@ public class CalculatorGUI extends JFrame{
 							return;
 						}
 						InstrumentFinancial newAsset = new Other(inCode, inName, inEAR, inTotal, 1.00);
-						mAssetModel.addRow(new String[] {
-								Integer.toString(mAssetModel.getRowCount() + 1), 
-								newAsset.getCode(), newAsset.getName(), "另类", 
-								Double.toString(Math.round(newAsset.getEAR() * 10000.00) / 100.00) + StringConstants.BaiFenShu, 
-								Double.toString(Math.round(newAsset.getTotal() * 100.00) / 100.00) + StringConstants.WanYuan,
-								Double.toString(Math.round(newAsset.getEarning() * 100.00) / 100.00) + StringConstants.WanYuan
-						});
-						portfolio.add(newAsset);
-						updateDisplay();
-						GraphicSettings.setForeground(GraphicConstants.greenText, mAlertLabel);
-						mAlertLabel.setText(StringConstants.OtherAddedAlert);
+						boolean addSuccess = portfolio.add(newAsset);
+						if (addSuccess) {
+							mAssetModel.addRow(new String[] {
+									Integer.toString(mAssetModel.getRowCount() + 1), 
+									newAsset.getCode(), newAsset.getName(), "另类", 
+									Double.toString(Math.round(newAsset.getEAR() * 10000.00) / 100.00) + StringConstants.BaiFenShu, 
+									Double.toString(Math.round(newAsset.getTotal() * 100.00) / 100.00) + StringConstants.WanYuan,
+									Double.toString(Math.round(newAsset.getEarning() * 100.00) / 100.00) + StringConstants.WanYuan
+							});
+							updateDisplay();
+							GraphicSettings.setForeground(GraphicConstants.greenText, mAlertLabel);
+							mAlertLabel.setText(StringConstants.OtherAddedAlert);
+						}
+						else {
+							GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
+							mAlertLabel.setText(StringConstants.InvalidAddCodeAlert);
+						}
 					} catch (Exception exc) {
 						GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
 						mAlertLabel.setText(StringConstants.InvalidTotalReadingAlert);
@@ -638,24 +674,27 @@ public class CalculatorGUI extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					int row = Integer.parseInt(mRemoveTextField.getText());
-					if (row < 1 || row > mAssetModel.getRowCount()) {
-						GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
-						mAlertLabel.setText(StringConstants.InvalidRemoveIndexAlert);
+				String inCode = mRemoveTextField.getText();
+				boolean removeSuccess = portfolio.remove(inCode);
+				if (removeSuccess) {
+					for (int row = 0; row < mAssetModel.getRowCount(); row++) {
+						String current = (String)(mAssetModel.getValueAt(row, 1));
+						if (current.equals(inCode)) {
+							mAssetModel.removeRow(row);
+							break;
+						}
 					}
-					else {
-						portfolio.remove(row - 1);
-						mAssetModel.removeRow(row - 1);
-						updateDisplay();
-					}
-				} catch (Exception exc) {
+					updateDisplay();
+					GraphicSettings.setForeground(GraphicConstants.greenText, mAlertLabel);
+					mAlertLabel.setText(StringConstants.PortfolioRemoveAlert);
+				}
+				else {
 					GraphicSettings.setForeground(GraphicConstants.redText, mAlertLabel);
-					mAlertLabel.setText(StringConstants.InvalidRemoveReadingAlert);
+					mAlertLabel.setText(StringConstants.InvalidRemoveCodeAlert);
 				}
 			}
 			
-		});;
+		});
 		
 		this.mRemoveAllButton.addActionListener(new ActionListener() {
 

@@ -26,11 +26,13 @@ public class StringConstants {
 	public static String CommodityAddedAlert = "大宗商品类产品已添加";
 	public static String CurrencyAddedAlert = "货币类产品已添加";
 	public static String OtherAddedAlert = "另类商品已添加";
+	public static String InvalidAddCodeAlert = "添加失败：产品代码冲突";
 	public static String InvalidEARReadingAlert = "添加失败：产品年化收益率(百分数)输入有误";
 	public static String InvalidTotalReadingAlert = "添加失败：产品投入金额输入(万元)有误";
 	public static String InsufficientCashAlert = "添加失败：现金不足或触及空仓规模下限";
 	public static String InvalidPrivateFundPositionAlert = "添加失败：私募基金类产品投资下限为100万元";
+	public static String PortfolioRemoveAlert = "该产品已移除";
 	public static String PortfolioRemoveAllAlert = "投资组合已清空";
 	public static String InvalidRemoveReadingAlert = "移除失败：列表编号有误";
-	public static String InvalidRemoveIndexAlert = "移除失败：列表编号不存在";
+	public static String InvalidRemoveCodeAlert = "移除失败：产品代码不存在";
 }
